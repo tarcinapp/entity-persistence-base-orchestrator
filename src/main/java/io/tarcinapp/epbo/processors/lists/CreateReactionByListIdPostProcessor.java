@@ -1,0 +1,27 @@
+package io.tarcinapp.epbo.processors.lists;
+
+import jakarta.enterprise.context.ApplicationScoped;
+import org.apache.camel.Exchange;
+import org.apache.camel.Processor;
+
+/**
+ * Post-processor for POST /lists/{id}/reactions (operationId: createReactionByListId).
+ *
+ * This bean is executed AFTER the backend has responded.
+ *
+ *
+ * <p>Useful exchange accessors:</p>
+ * <pre>
+ *   String responseBody = exchange.getMessage().getBody(String.class);
+ *   int statusCode = exchange.getMessage().getHeader(Exchange.HTTP_RESPONSE_CODE, Integer.class);
+ * </pre>
+ */
+@ApplicationScoped
+public class CreateReactionByListIdPostProcessor implements Processor {
+
+
+    @Override
+    public void process(Exchange exchange) throws Exception {
+        // TODO: implement post-processing logic for createReactionByListId
+    }
+}
