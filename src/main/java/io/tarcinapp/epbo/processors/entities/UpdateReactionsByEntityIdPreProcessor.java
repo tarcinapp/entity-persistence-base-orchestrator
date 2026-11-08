@@ -1,28 +1,28 @@
 package io.tarcinapp.epbo.processors.entities;
 
+import io.tarcinapp.epbo.normalization.FieldNormalizationService;
+import io.tarcinapp.epbo.normalization.FieldNormalizationService.Operation;
+import io.tarcinapp.epbo.normalization.NormalizationConfigService.RecordType;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 
 /**
  * Pre-processor for PATCH /entities/{id}/reactions (operationId: updateReactionsByEntityId).
  *
- * This bean is executed BEFORE the backend call.
- *
- *
- * <p>To short-circuit the route (skip backend + post-processor):</p>
- * <pre>
- *   exchange.setProperty("CamelRouteStop", Boolean.TRUE);
- *   exchange.getMessage().setHeader(Exchange.HTTP_RESPONSE_CODE, 200);
- *   exchange.getMessage().setBody("{ \"message\": \"handled by pre-processor\" }");
- * </pre>
+ * Bulk PATCH on entity reactions — PATCH semantics: only _slug injected if _name present.
  */
 @ApplicationScoped
 public class UpdateReactionsByEntityIdPreProcessor implements Processor {
 
+    @Inject
+    FieldNormalizationService normalizationService;
 
     @Override
     public void process(Exchange exchange) throws Exception {
-        // TODO: implement pre-processing logic for updateReactionsByEntityId
+        String body = exchange.getMessage().getBody(String.class);
+        String normalized = normalizationService.normalizeJson(body, Operation.PATCH, RecordType.ENTITY_REACTION);
+        exchange.getMessage().setBody(normalized);
     }
 }

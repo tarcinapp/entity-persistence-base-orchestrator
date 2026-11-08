@@ -1,28 +1,28 @@
 package io.tarcinapp.epbo.processors.relations;
 
+import io.tarcinapp.epbo.normalization.FieldNormalizationService;
+import io.tarcinapp.epbo.normalization.FieldNormalizationService.Operation;
+import io.tarcinapp.epbo.normalization.NormalizationConfigService.RecordType;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 
 /**
  * Pre-processor for PUT /relations/{id} (operationId: replaceRelationById).
  *
- * This bean is executed BEFORE the backend call.
- *
- *
- * <p>To short-circuit the route (skip backend + post-processor):</p>
- * <pre>
- *   exchange.setProperty("CamelRouteStop", Boolean.TRUE);
- *   exchange.getMessage().setHeader(Exchange.HTTP_RESPONSE_CODE, 200);
- *   exchange.getMessage().setBody("{ \"message\": \"handled by pre-processor\" }");
- * </pre>
+ * Full replacement — same normalization rules as CREATE.
  */
 @ApplicationScoped
 public class ReplaceRelationByIdPreProcessor implements Processor {
 
+    @Inject
+    FieldNormalizationService normalizationService;
 
     @Override
     public void process(Exchange exchange) throws Exception {
-        // TODO: implement pre-processing logic for replaceRelationById
+        String body = exchange.getMessage().getBody(String.class);
+        String normalized = normalizationService.normalizeJson(body, Operation.REPLACE, RecordType.RELATION);
+        exchange.getMessage().setBody(normalized);
     }
 }

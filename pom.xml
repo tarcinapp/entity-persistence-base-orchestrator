@@ -132,6 +132,16 @@
             <artifactId>quarkus-micrometer-registry-prometheus</artifactId>
         </dependency>
 
+        <!--
+            quarkus-jackson
+            Provides a CDI-managed ObjectMapper (Jackson) used by FieldNormalizationService
+            to parse and mutate the JSON body of incoming requests.
+        -->
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-jackson</artifactId>
+        </dependency>
+
         <!-- ── Testing ───────────────────────────────────────────────── -->
 
         <dependency>

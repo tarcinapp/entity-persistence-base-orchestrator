@@ -1,28 +1,28 @@
 package io.tarcinapp.epbo.processors.lists;
 
+import io.tarcinapp.epbo.normalization.FieldNormalizationService;
+import io.tarcinapp.epbo.normalization.FieldNormalizationService.Operation;
+import io.tarcinapp.epbo.normalization.NormalizationConfigService.RecordType;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 
 /**
  * Pre-processor for POST /lists/{id}/children (operationId: createChildList).
  *
- * This bean is executed BEFORE the backend call.
- *
- *
- * <p>To short-circuit the route (skip backend + post-processor):</p>
- * <pre>
- *   exchange.setProperty("CamelRouteStop", Boolean.TRUE);
- *   exchange.getMessage().setHeader(Exchange.HTTP_RESPONSE_CODE, 200);
- *   exchange.getMessage().setBody("{ \"message\": \"handled by pre-processor\" }");
- * </pre>
+ * Creates a child list — same record type as the parent (LIST).
  */
 @ApplicationScoped
 public class CreateChildListPreProcessor implements Processor {
 
+    @Inject
+    FieldNormalizationService normalizationService;
 
     @Override
     public void process(Exchange exchange) throws Exception {
-        // TODO: implement pre-processing logic for createChildList
+        String body = exchange.getMessage().getBody(String.class);
+        String normalized = normalizationService.normalizeJson(body, Operation.CREATE, RecordType.LIST);
+        exchange.getMessage().setBody(normalized);
     }
 }
