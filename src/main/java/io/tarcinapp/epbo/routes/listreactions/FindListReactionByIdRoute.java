@@ -2,7 +2,6 @@ package io.tarcinapp.epbo.routes.listreactions;
 
 import io.tarcinapp.epbo.processors.listreactions.FindListReactionByIdPreProcessor;
 import io.tarcinapp.epbo.processors.listreactions.FindListReactionByIdPostProcessor;
-import jakarta.annotation.Priority;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.apache.camel.builder.RouteBuilder;
@@ -19,7 +18,6 @@ import org.apache.camel.builder.RouteBuilder;
  *   exchange.getMessage().setHeader("CamelHttpResponseCode", 200);
  *   exchange.getMessage().setBody("{ ... }");
  */
-@Priority(20)
 @ApplicationScoped
 public class FindListReactionByIdRoute extends RouteBuilder {
 

@@ -2,7 +2,6 @@ package io.tarcinapp.epbo.routes.lists;
 
 import io.tarcinapp.epbo.processors.lists.CountListsPreProcessor;
 import io.tarcinapp.epbo.processors.lists.CountListsPostProcessor;
-import jakarta.annotation.Priority;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.apache.camel.builder.RouteBuilder;
@@ -19,7 +18,6 @@ import org.apache.camel.builder.RouteBuilder;
  *   exchange.getMessage().setHeader("CamelHttpResponseCode", 200);
  *   exchange.getMessage().setBody("{ ... }");
  */
-@Priority(10)
 @ApplicationScoped
 public class CountListsRoute extends RouteBuilder {
 
@@ -33,6 +31,7 @@ public class CountListsRoute extends RouteBuilder {
     public void configure() {
         from("platform-http:/lists/count?httpMethodRestrict=GET")
             .routeId("countLists")
+            .startupOrder(2)
             .process(preProcessor)
             .choice()
                 .when(exchangeProperty("CamelRouteStop").isEqualTo(Boolean.TRUE))
