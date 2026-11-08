@@ -3,6 +3,7 @@ package io.tarcinapp.epbo.processors.system;
 import jakarta.enterprise.context.ApplicationScoped;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
+import org.jboss.logging.Logger;
 
 /**
  * Pre-processor for GET /openapi.json (operationId: getOpenApiJson).
@@ -20,9 +21,11 @@ import org.apache.camel.Processor;
 @ApplicationScoped
 public class GetOpenApiJsonPreProcessor implements Processor {
 
+    private static final Logger LOG = Logger.getLogger(GetOpenApiJsonPreProcessor.class);
 
     @Override
     public void process(Exchange exchange) throws Exception {
-        // TODO: implement pre-processing logic for getOpenApiJson
+        LOG.debugf("openapi.json requested; requestId=%s",
+                exchange.getMessage().getHeader("X-Request-Id", String.class));
     }
 }
