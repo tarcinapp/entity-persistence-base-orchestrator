@@ -19,7 +19,6 @@ import org.apache.camel.Processor;
 @ApplicationScoped
 public class FindEntityByIdPostProcessor implements Processor {
 
-
     @Override
     public void process(Exchange exchange) throws Exception {
         // TODO: implement post-processing logic for findEntityById

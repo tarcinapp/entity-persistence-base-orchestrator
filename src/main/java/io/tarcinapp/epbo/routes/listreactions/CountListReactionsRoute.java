@@ -4,6 +4,7 @@ import io.tarcinapp.epbo.processors.listreactions.CountListReactionsPreProcessor
 import io.tarcinapp.epbo.processors.listreactions.CountListReactionsPostProcessor;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import io.tarcinapp.epbo.RequestIdMdcProcessor;
 import org.apache.camel.builder.RouteBuilder;
 
 /**
@@ -22,6 +23,9 @@ import org.apache.camel.builder.RouteBuilder;
 public class CountListReactionsRoute extends RouteBuilder {
 
     @Inject
+    RequestIdMdcProcessor mdcProcessor;
+
+    @Inject
     CountListReactionsPreProcessor preProcessor;
 
     @Inject
@@ -32,10 +36,11 @@ public class CountListReactionsRoute extends RouteBuilder {
         from("platform-http:/list-reactions/count?httpMethodRestrict=GET")
             .routeId("countListReactions")
             .startupOrder(5)
+            .process(mdcProcessor)
             .process(preProcessor)
             .choice()
                 .when(exchangeProperty("CamelRouteStop").isEqualTo(Boolean.TRUE))
-                    .log("Route ${routeId} short-circuited by pre-processor — skipping backend and post-processor")
+                    .log("Route ${routeId} short-circuited by pre-processor — skipping backend and post-processor. requestId=${header.X-Request-Id}")
                 .otherwise()
                     // Strip hop-by-hop headers that must not be forwarded
                     .removeHeader("Content-Length")
